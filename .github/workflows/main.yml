@@ -10,17 +10,11 @@ jobs:
          # wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
          # unzip android-ndk-r25c-linux.zip >> /dev/null
          $ANDROID_NDK_HOME/ndk-build APP_BUILD_SCRIPT=./Android.mk NDK_PROJECT_PATH=.
-         $ANDROID_NDK_HOME/ndk-build APP_BUILD_SCRIPT=./Android_debug.mk NDK_PROJECT_PATH=.
       - name: Upload GL4ES libs
         uses: actions/upload-artifact@v2
         with:
           name: gl4es-116-android
           path: libs/*
-      - name: Upload GL4ES debug libs
-        uses: actions/upload-artifact@v2
-        with:
-          name: gl4es-116-android
-          path: 'obj/**/*.so'
   build-ios:
     runs-on: macos-latest
     steps:
