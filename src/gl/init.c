@@ -96,6 +96,11 @@ void initialize_gl4es() {
     globals4es.mergelist = 1;
     globals4es.queries = 1;
     globals4es.beginend = 1;
+    #ifdef PYRA
+    GetEnvVarInt("LIBGL_DEEPBIND", &globals4es.deepbind, 0);
+    #else
+    GetEnvVarInt("LIBGL_DEEPBIND", &globals4es.deepbind, 1);
+    #endif
     // overrides by env. variables
 		#ifdef GL4ES_COMPILE_FOR_USE_IN_SHARED_LIB
 			GetEnvVarInt("LIBGL_NOBANNER",&globals4es.nobanner,1);
@@ -136,7 +141,7 @@ void initialize_gl4es() {
 #endif
     	case 4:
 #ifdef NO_GBM
-        SHUT_LOGD("GBM Support not builded, cannot use it\n");
+        SHUT_LOGD("GBM support not built, cannot use it\n");
 #else
         SHUT_LOGD("using GBM\n");
         globals4es.usefb = 0;
@@ -148,7 +153,7 @@ void initialize_gl4es() {
     }
     env(LIBGL_BLITFB0, globals4es.blitfb0, "Blit to FB 0 force a SwapBuffer");
     env(LIBGL_FPS, globals4es.showfps, "fps counter enabled");
-#ifdef USE_FBIO
+#if defined(USE_FBIO) || defined(PYRA)
     env(LIBGL_VSYNC, globals4es.vsync, "vsync enabled");
 #endif
 #ifdef PANDORA
@@ -159,7 +164,7 @@ void initialize_gl4es() {
     env(LIBGL_NOBGRA, globals4es.nobgra, "Ignore BGRA texture capability");
     env(LIBGL_NOTEXRECT, globals4es.notexrect, "Don't export Text Rectangle extension");
     if(globals4es.usefbo) {
-      env(LIBGL_FBONOALPHA, globals4es.fbo_noalpha, "Main FBO have no alpha channel");
+      env(LIBGL_FBONOALPHA, globals4es.fbo_noalpha, "Main FBO has no alpha channel");
     }
 
 		globals4es.es=ReturnEnvVarInt("LIBGL_ES");
@@ -310,37 +315,37 @@ void initialize_gl4es() {
     globals4es.texshrink=ReturnEnvVarInt("LIBGL_SHRINK");
     switch(globals4es.texshrink) {
       case 10:
-        SHUT_LOGD("Texture shink, mode 10 selected (advertise 8192 max texture size, but >2048 are quadshrinked and > 512 are shrinked), but not for empty texture\n");
+        SHUT_LOGD("Texture shrink, mode 10 selected (advertise 8192 max texture size, but >2048 are quadshrinked and > 512 are shrinked), but not for empty textures\n");
         break;
       case 11:
-        SHUT_LOGD("Texture shink, mode 11 selected (advertise a max texture size *2, but every texture with one dimension > max texture size will get shrinked to max texture size), but not for empty texture\n");
+        SHUT_LOGD("Texture shrink, mode 11 selected (advertise a max texture size *2, but every texture with one dimension > max texture size will get shrinked to max texture size), but not for empty textures\n");
         break;
       case 1:
-        SHUT_LOGD("Texture shink, mode 1 selected (everything / 2)\n");
+        SHUT_LOGD("Texture shrink, mode 1 selected (everything / 2)\n");
         break;
       case 2:
-        SHUT_LOGD("Texture shink, mode 2 selected (only > 512 /2 )\n");
+        SHUT_LOGD("Texture shrink, mode 2 selected (only > 512 /2 )\n");
         break;
       case 3:
-        SHUT_LOGD("Texture shink, mode 3 selected (only > 256 /2 )\n");
+        SHUT_LOGD("Texture shrink, mode 3 selected (only > 256 /2 )\n");
         break;
       case 4:
-        SHUT_LOGD("Texture shink, mode 4 selected (only > 256 /2, >=1024 /4 )\n");
+        SHUT_LOGD("Texture shrink, mode 4 selected (only > 256 /2, >=1024 /4 )\n");
         break;
       case 5:
-        SHUT_LOGD("Texture shink, mode 5 selected (every > 256 is downscaled to 256 ), but not for empty texture\n");
+        SHUT_LOGD("Texture shrink, mode 5 selected (every > 256 is downscaled to 256 ), but not for empty textures\n");
         break;
       case 6:
-        SHUT_LOGD("Texture shink, mode 6 selected (only > 128 /2, >=512 is downscaled to 256 ), but not for empty texture\n");
+        SHUT_LOGD("Texture shrink, mode 6 selected (only > 128 /2, >=512 is downscaled to 256 ), but not for empty textures\n");
         break;
       case 7:
-        SHUT_LOGD("Texture shink, mode 7 selected (only > 512 /2 ), but not for empty texture\n");
+        SHUT_LOGD("Texture shrink, mode 7 selected (only > 512 /2 ), but not for empty textures\n");
         break;
       case 8:
-        SHUT_LOGD("Texture shink, mode 8 selected (advertise 8192 max texture size, but >2048 are shrinked to 2048)\n");
+        SHUT_LOGD("Texture shrink, mode 8 selected (advertise 8192 max texture size, but >2048 are shrinked to 2048)\n");
         break;
       case 9:
-        SHUT_LOGD("Texture shink, mode 9 selected (advertise 8192 max texture size, but >4096 are quadshrinked and > 512 are shrinked), but not for empty texture\n");
+        SHUT_LOGD("Texture shrink, mode 9 selected (advertise 8192 max texture size, but >4096 are quadshrinked and > 512 are shrinked), but not for empty textures\n");
         break;
       default:
       	globals4es.texshrink=0;
@@ -435,7 +440,7 @@ void initialize_gl4es() {
         globals4es.nodownsampling = 1;
         SHUT_LOGD("No downsampling of DXTc textures\n");
     }
-    env(LIBGL_NOTEXMAT, globals4es.texmat, "Don't handle Texture Matrice internaly");
+    env(LIBGL_NOTEXMAT, globals4es.texmat, "Don't handle Texture Matrice internally");
     env(LIBGL_NOVAOCACHE, globals4es.novaocache, "Don't use VAO cache");
     if(IsEnvVarTrue("LIBGL_NOINTOVLHACK")) {
         globals4es.nointovlhack = 1;
@@ -497,9 +502,9 @@ void initialize_gl4es() {
             SHUT_LOGD("NPOT texture handled in hardware\n");
         } else if(hardext.npot==1) {
             globals4es.forcenpot = 1;
-            SHUT_LOGD("Forcing NPOT support by disabling MIPMAP support for NPOT textures \n");
+            SHUT_LOGD("Forcing NPOT support by disabling MIPMAP support for NPOT textures\n");
         } else {
-            SHUT_LOGD("WARNING, No Limited or Full NPOT support in hardware, Forcing NPOT have no effect!\n");
+            SHUT_LOGD("WARNING, No Limited or Full NPOT support in hardware, Forcing NPOT has no effect!\n");
         }
     }
 
@@ -538,13 +543,13 @@ void initialize_gl4es() {
 	        SHUT_LOGD("Use of VBO disabled\n");
 	        break;
 	      case 1:
-	        SHUT_LOGD("try to use VBO\n");
+	        SHUT_LOGD("Trying to use VBO\n");
 	        break;
 	      case 2:
-	        SHUT_LOGD("try to use VBO (also with glLockArrays)\n");
+	        SHUT_LOGD("Trying to use VBO (also with glLockArrays)\n");
 	        break;
 	      case 3:
-	        SHUT_LOGD("try to use VBO (special glLockArrays case for idtech3 engine)\n");
+	        SHUT_LOGD("Trying to use VBO (special glLockArrays case for idtech3 engine)\n");
 	      	break;
 	      default:
 	      	globals4es.usevbo=1;
@@ -629,7 +634,7 @@ void initialize_gl4es() {
         SHUT_LOGD("No Texture Array in Shaders\n");
     }
 
-    env(LIBGL_LOGSHADERERROR, globals4es.logshader, "Log to the console Error compiling shaders");
+    env(LIBGL_LOGSHADERERROR, globals4es.logshader, "Log errors compiling shaders to the console");
     env(LIBGL_SHADERNOGLES, globals4es.shadernogles, "Remove GLES part in shader");
     env(LIBGL_NOES2COMPAT, globals4es.noes2, "Don't expose GLX_EXT_create_context_es2_profile extension");
     env(LIBGL_NORMALIZE, globals4es.normalize, "Force normals to be normalized on FPE shaders");
@@ -642,7 +647,7 @@ void initialize_gl4es() {
           globals4es.dbgshaderconv|=3;    // select both
       if(!(globals4es.dbgshaderconv&12))  // neither before or after
           globals4es.dbgshaderconv|=12;   // select both
-      SHUT_LOGD_NOPREFIX("Log to the console all shaders before and after conversion: ");
+      SHUT_LOGD_NOPREFIX("Log all shaders, before and after conversion, to the console: ");
       if(globals4es.dbgshaderconv&4)
           SHUT_LOGD_NOPREFIX("Before  ");
       if(globals4es.dbgshaderconv&8)
@@ -654,7 +659,7 @@ void initialize_gl4es() {
       SHUT_LOGD_NOPREFIX("\n");
     }
 
-    env(LIBGL_NOCLEAN, globals4es.noclean, "Don't clean Context when destroy");
+    env(LIBGL_NOCLEAN, globals4es.noclean, "Don't clean Context when destroyed");
 
     globals4es.glxrecycle = 1;
 #ifndef NOEGL
@@ -673,23 +678,33 @@ void initialize_gl4es() {
     }
     env(LIBGL_GLXNATIVE, globals4es.glxnative, "Don't filter GLXConfig with GLX_X_NATIVE_TYPE");
 #endif
-    char cwd[1024];
+    char cwd[4096];
     if (getcwd(cwd, sizeof(cwd))!= NULL)
         SHUT_LOGD("Current folder is:%s\n", cwd);
 
+    if(hardext.shader_fbfetch) {
+      env(LIBGL_SHADERBLEND, globals4es.shaderblend, "Blend will be handled in shaders");
+    }
     if(hardext.prgbin_n>0 && !globals4es.notexarray) {
         env(LIBGL_NOPSA, globals4es.nopsa, "Don't use PrecompiledShaderArchive");
         if(globals4es.nopsa==0) {
             cwd[0]='\0';
             // TODO: What to do on ANDROID and EMSCRIPTEN?
+            const char* custom_psa = GetEnvVar("LIBGL_PSA_FOLDER");
 #ifdef __linux__
             const char* home = GetEnvVar("HOME");
-            if(home)
+            if(custom_psa)
+              strcpy(cwd, custom_psa);
+            else if(home)
                 strcpy(cwd, home);
-            if(cwd[strlen(cwd)]!='/')
-                strcat(cwd, "/");
+            if(strlen(cwd))
+              if(cwd[strlen(cwd)]!='/')
+                  strcat(cwd, "/");
 #elif defined AMIGAOS4
-            strcpy(cwd, "PROGDIR:");
+            if(custom_psa)
+              strcpy(cwd, custom_psa);
+            else
+              strcpy(cwd, "PROGDIR:");
 #endif
             if(strlen(cwd)) {
                 strcat(cwd, ".gl4es.psa");
@@ -697,7 +712,8 @@ void initialize_gl4es() {
                 fpe_readPSA();
             }
         }
-    }
+    } else 
+      SHUT_LOGD("Not using PSA (prgbin_n=%d, notexarray=%d)\n", hardext.prgbin_n, globals4es.notexarray);
 
     env(LIBGL_SKIPTEXCOPIES, globals4es.skiptexcopies, "Texture Copies will be skipped");
     if(GetEnvVarFloat("LIBGL_FB_TEX_SCALE",&globals4es.fbtexscale,0.0f)) {
@@ -721,10 +737,10 @@ __attribute__((destructor))
 #endif
 void close_gl4es() {
 		#ifdef GL4ES_COMPILE_FOR_USE_IN_SHARED_LIB
-	    SHUT_LOGD("Shuting down request\n");
+	    SHUT_LOGD("Shutdown requested\n");
     	if(--inited) return;
     #endif
-    SHUT_LOGD("Shuting down\n");
+    SHUT_LOGD("Shutting down\n");
     #ifndef NOX11
     FreeFBVisual();
     #endif
