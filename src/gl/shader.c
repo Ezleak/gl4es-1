@@ -220,13 +220,13 @@ void APIENTRY_GL4ES gl4es_glShaderSource(GLuint shader, GLsizei count, const GLc
             int convertedLen = strlen(glshader->converted);
             
             // patch OptiFine 1.17.x
-            if (FindString(glshader->converted, "\nuniform mat4 textureMatrix = mat4(1.0);")) {
-                InplaceReplace(glshader->converted, &convertedLen, "\nuniform mat4 textureMatrix = mat4(1.0);", "\n#define textureMatrix mat4(1.0)");
+            if (gl4es_find_string(glshader->converted, "\nuniform mat4 textureMatrix = mat4(1.0);")) {
+                gl4es_inplace_replace(glshader->converted, &convertedLen, "\nuniform mat4 textureMatrix = mat4(1.0);", "\n#define textureMatrix mat4(1.0)");
             }
             
             // some needed exts
             const char* GL_EXT_blend_func_extended = "#extension GL_EXT_blend_func_extended : enable\n";
-            glshader->converted = InplaceInsert(GetLine(glshader->converted, 1), GL_EXT_blend_func_extended, glshader->converted, &convertedLen);
+            glshader->converted = gl4es_inplace_insert(gl4es_getline(glshader->converted, 1), GL_EXT_blend_func_extended, glshader->converted, &convertedLen);
         } else {
 
         // adapt shader if needed (i.e. not an es2 context and shader is not #version 100)
