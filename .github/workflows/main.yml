@@ -1,5 +1,5 @@
-name: Build gl4es-114
-on: [workflow_dispatch]
+name: Build gl4es
+on: [workflow_dispatch, push]
 jobs:
   build-android:
     runs-on: ubuntu-24.04
@@ -13,5 +13,5 @@ jobs:
       - name: Upload GL4ES libs
         uses: actions/upload-artifact@v4
         with:
-          name: gl4es-114-android
+          name: gl4es-android
           path: libs/*
