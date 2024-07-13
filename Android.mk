@@ -11,7 +11,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := gl4es_ptitseb
 
 LOCAL_C_INCLUDES := \
-        $(LOCAL_PATH)/include
+        $(LOCAL_PATH)/include \
         $(LOCAL_PATH)/tinygl4angle/include
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES) -DBCMHOST
