@@ -10,7 +10,9 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := gl4es_ptitseb
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+LOCAL_C_INCLUDES := \
+        $(LOCAL_PATH)/include
+        $(LOCAL_PATH)/tinygl4angle/include
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES) -DBCMHOST
 
@@ -91,7 +93,8 @@ LOCAL_SRC_FILES := \
 	src/glx/hardext.c \
 	src/glx/glx.c \
 	src/glx/lookup.c \
-	src/glx/streaming.c
+	src/glx/streaming.c \
+        src/tinygl4angle/tinygl4angle.c
 LOCAL_CFLAGS += -DANDROID -pipe -integrated-as -fno-plt -Ofast -flto=auto -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -std=gnu2x -funwind-tables -Ofast -fvisibility=hidden -fno-semantic-interposition -include include/android_debug.h
 LOCAL_CFLAGS += -DNOX11
 LOCAL_CFLAGS += -DNO_GBM
